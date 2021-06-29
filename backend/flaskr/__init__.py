@@ -48,9 +48,8 @@ def create_app(test_config=None):
   @cross_origin()
   def retrieve_categories():
     categories = Category.query.all()
-    #categories = Category.query.order_by(Category.type).all()
+    
     formatted_categories = [category.format() for category in categories]
-
 
     if len(categories) == 0:
       abort(404)
@@ -82,11 +81,7 @@ def create_app(test_config=None):
     if len(current_questions) == 0:
       abort(404)
 
-    
-
-    #formatted_questions = [question.format() for question in questions]
     formatted_categories = [category.format() for category in categories]    
-
 
     return jsonify({
         'success': True,
@@ -112,8 +107,6 @@ def create_app(test_config=None):
         abort(404)
 
       question.delete()
-      #selection = Question.query.order_by(Question.id).all()
-      #current_questions = paginate_questions(request, selection)
 
       return jsonify({
         'success': True,
@@ -178,9 +171,6 @@ def create_app(test_config=None):
     if search_term:
       selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search_term)))
       current_questions = paginate_questions(request, selection)
-      
-      if len(current_questions) == 0:
-        abort(404)
 
       return jsonify({
       'success': True,
@@ -203,7 +193,7 @@ def create_app(test_config=None):
   @cross_origin()
   def retrieve_questions_by_category(category_id):
     try:  
-      selection = Question.query(Question.category == str(category_id)).all()
+      selection = Question.query.filter(Question.category == str(category_id)).all()
       questions = paginate_questions(request, selection)
 
       return jsonify({
