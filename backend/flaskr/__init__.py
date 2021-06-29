@@ -48,15 +48,13 @@ def create_app(test_config=None):
   @cross_origin()
   def retrieve_categories():
     categories = Category.query.all()
-    
-    formatted_categories = [category.format() for category in categories]
 
     if len(categories) == 0:
       abort(404)
 
     return jsonify({
         'success': True,
-        'categories': formatted_categories,
+        'categories': {category.id: category.type for category in categories},
         })
   '''
   @TODO: 
@@ -81,14 +79,12 @@ def create_app(test_config=None):
     if len(current_questions) == 0:
       abort(404)
 
-    formatted_categories = [category.format() for category in categories]    
-
     return jsonify({
         'success': True,
         'questions': current_questions,
         'total_questions': len(selection),
         'current_category': None,
-        'categories': formatted_categories
+        'categories': {category.id: category.type for category in categories}
         })
   '''
   @TODO: 
@@ -193,9 +189,9 @@ def create_app(test_config=None):
   @cross_origin()
   def retrieve_questions_by_category(category_id):
     try:  
-      selection = Question.query.filter(Question.category == str(category_id)).all()
-      questions = paginate_questions(request, selection)
-
+      questions = Question.query.filter(Question.category == str(category_id)).all()
+      questions = [question.format() for question in questions]
+      
       return jsonify({
         'success': True,
         'questions': questions,
