@@ -118,8 +118,7 @@ def create_app(test_config=None):
     @cross_origin()
     def delete_question(question_id):
         try:
-            question = Question()
-            Question.query.filter(Question.id == question_id).one_or_none()
+            question = Question.query.filter(Question.id == question_id).one_or_none()
 
             if question is None:
                 abort(404)
